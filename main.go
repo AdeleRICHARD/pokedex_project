@@ -35,6 +35,12 @@ func init() {
 			callback:    commandMap,
 			config:      &pokeapi.Config{},
 		},
+		"mapb": {
+			name:        "mapb",
+			description: "Display the previous map",
+			callback:    commandMapB,
+			config:      &pokeapi.Config{},
+		},
 	}
 }
 
@@ -67,10 +73,29 @@ func commandMap() error {
 	return nil
 }
 
+func commandMapB() error {
+	command := commands["mapb"]
+	if commands["map"].config != nil {
+		command.config = commands["map"].config
+	}
+	previousLocations := command.config.GetPrev()
+
+	if previousLocations == nil {
+		return fmt.Errorf("no previous locations")
+	}
+
+	for _, location := range previousLocations {
+		fmt.Println(*location.Name)
+	}
+
+	return nil
+}
+
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
 		line := scanner.Text()
+
 		if command, ok := commands[line]; ok {
 			if err := command.callback(); err != nil {
 				fmt.Println("Error:", err)

@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
+
+	"github.com/AdeleRICHARD/pokedexcli/internal"
 )
 
 type Config struct {
@@ -26,7 +29,53 @@ func (conf *Config) GetNext() []Location {
 		*conf.NextUrl = "https://pokeapi.co/api/v2/location-area/"
 	}
 
+	type LocationsArea struct {
+		NextUrl string     `json:"next"`
+		PrevUrl string     `json:"previous"`
+		Result  []Location `json:"results"`
+	}
+
+	var locations LocationsArea
+
+	cache := internal.NewCache(5 * time.Second)
+	values, ok := cache.Get(*conf.NextUrl)
+	if ok {
+		json.Unmarshal(values, &locations)
+		return locations.Result
+	}
+
 	res, err := http.Get(*conf.NextUrl)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	rawData, err := json.Marshal(locations)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	cache.Add(*conf.NextUrl, rawData)
+
+	defer res.Body.Close()
+
+	json.NewDecoder(res.Body).Decode(&locations)
+
+	conf.NextUrl = &locations.NextUrl
+	if locations.PrevUrl != "" {
+		conf.PrevUrl = &locations.PrevUrl
+	}
+
+	return locations.Result
+}
+
+func (conf *Config) GetPrev() []Location {
+	println(conf.PrevUrl)
+	if conf.PrevUrl == nil {
+		return nil
+	}
+
+	res, err := http.Get(*conf.PrevUrl)
+	println(res)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -35,16 +84,15 @@ func (conf *Config) GetNext() []Location {
 
 	type LocationsArea struct {
 		NextUrl string     `json:"next"`
+		PrevUrl string     `json:"previous"`
 		Result  []Location `json:"results"`
 	}
 
 	var locations LocationsArea
 	json.NewDecoder(res.Body).Decode(&locations)
+	if locations.PrevUrl != "" {
+		conf.PrevUrl = &locations.PrevUrl
+	}
 
-	conf.NextUrl = &locations.NextUrl
 	return locations.Result
-}
-
-func Prev() string {
-	return "prev"
 }
