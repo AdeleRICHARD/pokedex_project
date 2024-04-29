@@ -36,7 +36,6 @@ func (conf *Config) GetNext() []Location {
 	}
 
 	var locations LocationsArea
-
 	cache := internal.NewCache(5 * time.Second)
 	values, ok := cache.Get(*conf.NextUrl)
 	if ok {
@@ -75,7 +74,6 @@ func (conf *Config) GetPrev() []Location {
 	}
 
 	res, err := http.Get(*conf.PrevUrl)
-	println(res)
 	if err != nil {
 		fmt.Println(err)
 	}

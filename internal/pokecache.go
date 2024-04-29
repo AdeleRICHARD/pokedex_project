@@ -16,21 +16,17 @@ type cacheEntry struct {
 }
 
 func NewCache(interval time.Duration) *Cache {
-	print("Creating new cache")
 	cache := &Cache{
 		cacheEntry: make(map[string]cacheEntry),
 	}
 
-	ticker := time.Ticker{
-		C: make(chan time.Time),
-	}
+	ticker := time.NewTicker(interval)
 
-	_, ok := <-ticker.C
-	println("Starting ticker, ok:", ok)
-	if ok {
-		println("Starting ticker")
-		go cache.reapLoop(interval)
-	}
+	go func() {
+		for range ticker.C {
+			cache.reapLoop(interval) // Appelez votre fonction de nettoyage
+		}
+	}()
 
 	return cache
 }
@@ -55,7 +51,6 @@ func (cache *Cache) reapLoop(interval time.Duration) {
 	cache.mutex.Lock()
 	for key, timeEntry := range cache.cacheEntry {
 		if time.Since(timeEntry.createdAt) > interval {
-			println("Reaping key", key)
 			delete(cache.cacheEntry, key)
 		}
 	}
