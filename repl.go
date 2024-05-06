@@ -11,7 +11,7 @@ import (
 type CliCommand struct {
 	name        string
 	description string
-	callback    func() error
+	callback    func(pokeapi.Client) error
 	config      *pokeapi.Config
 }
 
@@ -50,7 +50,7 @@ func init() {
 	}
 }
 
-func startRepl() {
+func startRepl(client *pokeapi.Client) {
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
 		line := scanner.Text()

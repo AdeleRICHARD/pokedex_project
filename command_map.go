@@ -6,8 +6,7 @@ import (
 	pokeapi "github.com/AdeleRICHARD/pokedexcli/internal/pokeapi"
 )
 
-func commandMap() error {
-	pokeapiClient := pokeapi.NewClient()
+func commandMap(pokeapiClient pokeapi.Client) error {
 
 	resp, err := pokeapiClient.GetLocationAreas()
 	if err != nil {

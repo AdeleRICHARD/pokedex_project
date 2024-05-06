@@ -1,5 +1,9 @@
 package main
 
+import pokeapi "github.com/AdeleRICHARD/pokedexcli/internal/pokeapi"
+
 func main() {
-	startRepl()
+	pokeapiClient := pokeapi.NewClient()
+
+	startRepl(pokeapiClient)
 }
