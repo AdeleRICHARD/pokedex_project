@@ -6,7 +6,7 @@ import (
 	"github.com/AdeleRICHARD/pokedexcli/internal/pokeapi"
 )
 
-func commandExit(pokeClient *pokeapi.Client) error {
+func commandExit(pokeClient *pokeapi.Client, name *string) error {
 	os.Exit(0)
 	return nil
 }

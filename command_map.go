@@ -6,7 +6,7 @@ import (
 	pokeapi "github.com/AdeleRICHARD/pokedexcli/internal/pokeapi"
 )
 
-func commandMap(pokeapiClient *pokeapi.Client) error {
+func commandMap(pokeapiClient *pokeapi.Client, name *string) error {
 	resp, err := pokeapiClient.GetLocationAreas(pokeapiClient.Config.NextUrl)
 	if err != nil {
 		return err
@@ -23,7 +23,7 @@ func commandMap(pokeapiClient *pokeapi.Client) error {
 	return nil
 }
 
-func commandMapB(pokeapi *pokeapi.Client) error {
+func commandMapB(pokeapi *pokeapi.Client, name *string) error {
 	if pokeapi.Config.PrevUrl == nil {
 		fmt.Println("You are at the beginning of the map")
 		return nil

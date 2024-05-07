@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
 
 	pokeapi "github.com/AdeleRICHARD/pokedexcli/internal/pokeapi"
 )
@@ -11,7 +12,7 @@ import (
 type CliCommand struct {
 	name        string
 	description string
-	callback    func(*pokeapi.Client) error
+	callback    func(*pokeapi.Client, *string) error
 	config      *pokeapi.Config
 }
 
@@ -51,12 +52,17 @@ func init() {
 }
 
 func startRepl(client *pokeapi.Client) {
+	var name *string
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
 		line := scanner.Text()
+		lineSplit := strings.Split(line, " ")
+		if len(lineSplit) > 1 {
+			name = &lineSplit[1]
+		}
 
-		if command, ok := commands[line]; ok {
-			if err := command.callback(client); err != nil {
+		if command, ok := commands[lineSplit[0]]; ok {
+			if err := command.callback(client, name); err != nil {
 				fmt.Println("Error:", err)
 			}
 		} else {
