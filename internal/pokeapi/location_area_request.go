@@ -8,6 +8,8 @@ import (
 )
 
 func (c *Client) GetLocationAreas(pageUrl *string) (LocationsAreasResponse, error) {
+	locationAreasRes := LocationsAreasResponse{}
+
 	endpoint := "location-area"
 	fullURL := baseUrl + endpoint
 
@@ -15,12 +17,21 @@ func (c *Client) GetLocationAreas(pageUrl *string) (LocationsAreasResponse, erro
 		fullURL = *pageUrl
 	}
 
+	respCache, ok := c.Cache.Get(fullURL)
+	if ok {
+		err := json.Unmarshal(respCache, &locationAreasRes)
+		if err != nil {
+			return LocationsAreasResponse{}, err
+		}
+		return locationAreasRes, nil
+	}
+
 	req, err := http.NewRequest(http.MethodGet, fullURL, nil)
 	if err != nil {
 		return LocationsAreasResponse{}, err
 	}
 
-	res, err := c.httpClient.Do(req)
+	res, err := c.HttpClient.Do(req)
 	if err != nil {
 		return LocationsAreasResponse{}, err
 	}
@@ -35,7 +46,8 @@ func (c *Client) GetLocationAreas(pageUrl *string) (LocationsAreasResponse, erro
 		return LocationsAreasResponse{}, err
 	}
 
-	locationAreasRes := LocationsAreasResponse{}
+	c.Cache.Add(fullURL, data)
+
 	err = json.Unmarshal(data, &locationAreasRes)
 	if err != nil {
 		return LocationsAreasResponse{}, err
