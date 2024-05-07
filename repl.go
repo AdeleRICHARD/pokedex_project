@@ -11,7 +11,7 @@ import (
 type CliCommand struct {
 	name        string
 	description string
-	callback    func(pokeapi.Client) error
+	callback    func(*pokeapi.Client) error
 	config      *pokeapi.Config
 }
 
@@ -56,7 +56,7 @@ func startRepl(client *pokeapi.Client) {
 		line := scanner.Text()
 
 		if command, ok := commands[line]; ok {
-			if err := command.callback(); err != nil {
+			if err := command.callback(client); err != nil {
 				fmt.Println("Error:", err)
 			}
 		} else {

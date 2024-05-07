@@ -1,8 +1,8 @@
 package pokeapi
 
 type LocationsAreasResponse struct {
-	NextUrl string     `json:"next"`
-	PrevUrl string     `json:"previous"`
+	NextUrl *string    `json:"next"`
+	PrevUrl *string    `json:"previous"`
 	Result  []Location `json:"results"`
 }
 
