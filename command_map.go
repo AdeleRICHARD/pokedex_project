@@ -24,19 +24,23 @@ func commandMap(pokeapiClient *pokeapi.Client) error {
 }
 
 func commandMapB(pokeapi *pokeapi.Client) error {
-	command := commands["mapb"]
-	if commands["map"].config != nil {
-		command.config = commands["map"].config
+	if pokeapi.Config.PrevUrl == nil {
+		fmt.Println("You are at the beginning of the map")
+		return nil
 	}
-	/* previousLocations := command.config.GetPrev()
-
-	if previousLocations == nil {
-		return fmt.Errorf("no previous locations")
+	resp, err := pokeapi.GetLocationAreas(pokeapi.Config.PrevUrl)
+	if err != nil {
+		return err
 	}
 
-	for _, location := range previousLocations {
+	for _, location := range resp.Result {
 		fmt.Println(*location.Name)
-	} */
+	}
+
+	pokeapi.Config.NextUrl = pokeapi.Config.PrevUrl
+	if resp.PrevUrl != nil {
+		pokeapi.Config.PrevUrl = resp.PrevUrl
+	}
 
 	return nil
 }

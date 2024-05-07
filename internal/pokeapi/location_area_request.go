@@ -7,12 +7,12 @@ import (
 	"net/http"
 )
 
-func (c *Client) GetLocationAreas(nextUrl *string) (LocationsAreasResponse, error) {
+func (c *Client) GetLocationAreas(pageUrl *string) (LocationsAreasResponse, error) {
 	endpoint := "location-area"
 	fullURL := baseUrl + endpoint
 
-	if nextUrl != nil {
-		fullURL = *nextUrl
+	if pageUrl != nil {
+		fullURL = *pageUrl
 	}
 
 	req, err := http.NewRequest(http.MethodGet, fullURL, nil)
