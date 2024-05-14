@@ -26,7 +26,7 @@ func commandCatch(pokeApi *pokeapi.Client, name *string) error {
 	fmt.Printf("Throwing a Pokeball at %s\n", *name)
 	if randNum < threshold {
 		fmt.Printf("%s was caught\n", *name)
-		pokeApi.Config.Pokedex[*name] = *pokemonInfos
+		pokeApi.Config.Pokedex[*name] = pokemonInfos
 		return nil
 	}
 
