@@ -12,6 +12,7 @@ const baseUrl = "https://pokeapi.co/api/v2/"
 type Config struct {
 	NextUrl *string
 	PrevUrl *string
+	Pokedex map[string]PokemonInfos
 }
 
 type Client struct {
@@ -25,8 +26,10 @@ func NewClient() *Client {
 		HttpClient: http.Client{
 			Timeout: 10 * time.Second,
 		},
-		Config: &Config{},
-		Cache:  pokecache.NewCache(time.Hour),
+		Config: &Config{
+			Pokedex: make(map[string]PokemonInfos),
+		},
+		Cache: pokecache.NewCache(time.Hour),
 	}
 }
 

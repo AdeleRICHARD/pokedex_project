@@ -48,6 +48,12 @@ func init() {
 			callback:    commandeExplore,
 			config:      &pokeapi.Config{},
 		},
+		"catch": {
+			name:        "catch",
+			description: "Catch a pokemon in your pokedex",
+			callback:    commandCatch,
+			config:      &pokeapi.Config{},
+		},
 	}
 }
 
