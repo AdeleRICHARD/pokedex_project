@@ -7,12 +7,16 @@ type LocationsAreasResponse struct {
 }
 
 type LocationInfos struct {
-	Result []Pokemon `json:"pokemon"`
+	Result []Pokemons `json:"pokemon_encounters"`
 }
 
 type Location struct {
 	Name *string `json:"name"`
 	Url  *string `json:"url"`
+}
+
+type Pokemons struct {
+	Pokemon `json:"pokemon"`
 }
 
 type Pokemon struct {

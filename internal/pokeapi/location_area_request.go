@@ -55,3 +55,46 @@ func (c *Client) GetLocationAreas(pageUrl *string) (LocationsAreasResponse, erro
 
 	return locationAreasRes, nil
 }
+
+func (c *Client) GetLocationInfo(name *string) (LocationInfos, error) {
+	var locationInfos LocationInfos
+	if dataCache, ok := c.Cache.Get(*name); ok {
+		err := json.Unmarshal(dataCache, &locationInfos)
+		if err != nil {
+			return LocationInfos{}, err
+		}
+		return locationInfos, nil
+	}
+
+	endpoint := "location-area/" + *name
+	fullUrl := baseUrl + endpoint
+
+	req, err := http.NewRequest(http.MethodGet, fullUrl, nil)
+	if err != nil {
+		return LocationInfos{}, err
+	}
+
+	res, err := c.HttpClient.Do(req)
+	if err != nil {
+		return LocationInfos{}, err
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode > 399 {
+		return LocationInfos{}, fmt.Errorf("bad status code %d, url: %s", res.StatusCode, fullUrl)
+	}
+
+	dataInfo, err := io.ReadAll(res.Body)
+	if err != nil {
+		return LocationInfos{}, err
+	}
+
+	c.Cache.Add(fullUrl, dataInfo)
+
+	err = json.Unmarshal(dataInfo, &locationInfos)
+	if err != nil {
+		return LocationInfos{}, err
+	}
+
+	return locationInfos, nil
+}
