@@ -60,6 +60,12 @@ func init() {
 			callback:    commandInspect,
 			config:      &pokeapi.Config{},
 		},
+		"pokedex": {
+			name:        "pokedex",
+			description: "Show all pokemons in pokedex",
+			callback:    commandPokedex,
+			config:      &pokeapi.Config{},
+		},
 	}
 }
 
