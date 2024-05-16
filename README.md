@@ -1,6 +1,6 @@
-This is a pokedex REPL build with the course Pokedex on boot.dev
+# This is a pokedex REPL build with the course Pokedex on boot.dev
 
-The commands are : 
+## The commands are : 
 
 - Help
 - Map
